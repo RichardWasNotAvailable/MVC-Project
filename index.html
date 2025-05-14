@@ -1,26 +1,77 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <script src="./pixi/pixi.js"></script>
+    <meta charset="utf-8">
+    <title>Top-Down Racer</title>
+    <script src="./pixi/pixi.js" type="module"></script>
   </head>
   <body>
     <script type="module">
-      // Create the application helper and add its render target to the page
+      import * as PIXI from "https://cdn.jsdelivr.net/npm/pixi.js@8/dist/pixi.mjs";
+
       const app = new PIXI.Application();
-      await app.init({ width: 1000, height: 1000 })
+      await app.init({ background: '#1099bb', resizeTo: window });
       document.body.appendChild(app.canvas);
 
-      // Create the sprite and add it to the stage
-      await PIXI.Assets.load('Cookie.png');
-      let sprite = PIXI.Sprite.from('Cookie.png');
+      // Laad het circuitafbeelding (zorg ervoor dat dit een grote afbeelding van het circuit is)
+      await PIXI.Assets.load('./IMG/circuit-1.png');
+      const track = PIXI.Sprite.from('./IMG/circuit-1.png');
+      track.anchor.set(0.5);
+      track.x = app.screen.width / 1;
+      track.y = app.screen.height / 1;
+      app.stage.addChild(track);
 
-      app.stage.addChild(sprite);
+      // Laad de auto-afbeelding
+      await PIXI.Assets.load('./IMG/RedRaceCar.png');
+      const car = PIXI.Sprite.from('./IMG/RedRaceCar.png');
+      car.anchor.set(0.5);
+      car.scale.set(0.25);
+      car.x = app.screen.width / 2;
+      car.y = app.screen.height / 2;
+      app.stage.addChild(car);
 
-      // Add a ticker callback to move the sprite back and forth
-      let elapsed = 0.0;
-      app.ticker.add((ticker) => {
-        elapsed += ticker.deltaTime;
-        sprite.x = 100.0 + Math.cos(elapsed/50.0) * 100.0;
+      // Toetsenbordbesturing
+      const keys = {};
+      window.addEventListener('keydown', (e) => {
+        keys[e.key.toLowerCase()] = true;
+      });
+      window.addEventListener('keyup', (e) => {
+        keys[e.key.toLowerCase()] = false;
+      });
+
+      // Fysica-instellingen
+      let speed = 0;
+      const maxSpeed = 5;
+      const acceleration = 0.2;
+      const friction = 0.05;
+
+      app.ticker.add(() => {
+        // Versnellen en remmen
+        if (keys['w']) speed = Math.min(speed + acceleration, maxSpeed);
+        else if (keys['s']) speed = Math.max(speed - acceleration, -maxSpeed / 2);
+        else {
+          if (speed > 0) speed -= friction;
+          else if (speed < 0) speed += friction;
+          if (Math.abs(speed) < friction) speed = 0;
+        }
+
+        // Besturen
+        if (keys['a']) car.rotation -= 0.05;
+        if (keys['d']) car.rotation += 0.05;
+
+        // Beweging van de auto op basis van rotatie en snelheid
+        let dx = Math.sin(car.rotation) * speed;
+        let dy = -Math.cos(car.rotation) * speed;
+
+        car.x += dx;
+        car.y += dy;
+
+        // Zorg ervoor dat de auto oneindig kan blijven rijden (randcontrole)
+        if (car.x < 0) car.x = app.screen.width;
+        else if (car.x > app.screen.width) car.x = 0;
+
+        if (car.y < 0) car.y = app.screen.height;
+        else if (car.y > app.screen.height) car.y = 0;
       });
     </script>
   </body>
