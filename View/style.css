@@ -36,3 +36,16 @@
     position: absolute;
     margin-left: 195px;
 }
+
+.ClickToStart{
+    border-radius: 1rem;
+    background-color: green;
+    color: white;
+    font-size: 1.5rem;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.ClickToStart:hover{
+    background-color: greenyellow;
+    color: black;
+}

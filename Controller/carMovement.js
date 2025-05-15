@@ -80,10 +80,10 @@ function Play() {
         player.speed += 0.01;
         if (player.highScore < player.score) {
         player.highScore++;
-        highScore.innerHTML = "HighScore" + ":" + (player.highScore - 1);
+        highScore.innerHTML = "High Score" + ": " + (player.highScore - 1);
         highScore.style.top="80px";
         }
-        score.innerHTML = "Score" + ":" + (player.score - 1);
+        score.innerHTML = "Score" + ": " + (player.score - 1);
         window.requestAnimationFrame(Play);
     }
 }
@@ -118,6 +118,7 @@ return !((aRect.top > bRect.bottom) || (aRect.bottom < bRect.top) || (aRect.righ
 }
 //game is end
 function endGame() {
+alert("New Highscore: " + (player.highScore - 1));
 player.isStart = false;
 player.speed = 5;
 startScreen.classList.remove('hide');
