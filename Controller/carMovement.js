@@ -48,7 +48,6 @@ function Start() {
         Opponents.style.top = Opponents.y + "px";
         gameArea.appendChild(Opponents);
         Opponents.style.left = Math.floor(Math.random() * 350) + "px";
-        Opponents.style.backgroundColor=randomColor();
     }
     let car = document.createElement('div');
     car.setAttribute('class', 'car');
